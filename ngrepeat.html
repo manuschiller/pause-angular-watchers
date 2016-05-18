@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pause Angular Watchers while DOM-Elements are not visible in viewport</title>
+</head>
+<body ng-app="app">
+
+<div ng-controller="DemoController as vm">
+    <p>Type something and scroll to row 100. the watcher will fire and sync the content when the row is visible in the viewport</p>
+    <input type="text" ng-model="vm.table.rows[100][0]" placholder="Type something.."/>
+    <table ng-cloak>
+        <thead>
+        <tr>
+            <th ng-repeat="col in vm.table.cols track by $index">
+                {{col}}
+            </th>
+        </tr>
+        </thead>
+        <tbody ng-repeat="row in vm.table.rows track by $index">
+        <tr in-view="vm.rowVisible[$index] = $inview;" in-view-options="{debounce:vm.config.debounceScroll}" pause-children-watchers-if="!vm.rowVisible[$index]">
+            <td ng-repeat="cell in row track by $index"><input type="text" ng-model="cell" ng-change="vm.changed();"/></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>
+<script src="bower_components/angular/angular.js"></script>
+<script src="bower_components/angular-inview/angular-inview.js"></script>
+
+
+<script src="app/app.js"></script>
+</body>
+</html>
